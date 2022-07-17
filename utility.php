@@ -1,16 +1,5 @@
 <?php
-/* db_ext v2.0  @Shinjia  #2022/07/16 */
-
-function error($type='', $ext='')
-{
-    // 錯誤處理系統
-    $is_debug = true;
-    
-    echo $type;
-    echo '<hr>';
-    echo $ext;
-    exit;
-}
+/* db_ext v2.0  @Shinjia  #2022/07/17 */
 
 
 function error_message($type='', $ext='')
@@ -18,10 +7,7 @@ function error_message($type='', $ext='')
     $is_debug = true;
 
     $a_errmsg = array(
-    'ERROR_QUERY' => 'sth 執行錯誤',
-    'edit'        => '無法編輯資料 (edit)',
-    'edit_save'   => '無法修改資料 (edit_save)',
-    'delete'      => '無法刪除資料 (delete)',
+    'ERROR_QUERY' => '資料庫執行發生錯誤',
     'default'     => '有錯誤發生！' );  // 注意最後一項的結尾符號
 
     $msg = isset($a_errmsg[$type]) ? $a_errmsg[$type] : $a_errmsg['default'];

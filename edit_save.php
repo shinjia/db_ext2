@@ -1,7 +1,8 @@
 <?php
-/* db_ext v2.0  @Shinjia  #2022/07/16 */
+/* db_ext v2.0  @Shinjia  #2022/07/17 */
 
 include 'config.php';
+include 'utility.php';
 
 // 接收傳入變數
 $uid      = (isset($_POST['uid']))      ? $_POST['uid']      : '';
@@ -29,16 +30,23 @@ $sth->bindParam(':weight'  , $weight  , PDO::PARAM_INT);
 $sth->bindParam(':remark'  , $remark  , PDO::PARAM_STR);
 $sth->bindParam(':uid'     , $uid     , PDO::PARAM_INT);
 
-// 執行SQL及處理結果
-if($sth->execute())
-{
-   $url_display = 'display.php?uid=' . $uid;
-   header('Location: ' . $url_display);
+// 執行 SQL
+try { 
+   $sth->execute();
+
+   $lnk_display = "display.php?uid=" . $uid . '&page=' . $page . '&nump=' . $nump;
+   header('Location: ' . $lnk_display);
 }
-else
-{
-   echo print_r($pdo->errorInfo()) . '<br />' . $sqlstr; exit; // 此列供開發時期偵錯用
-   header('Location: error.php');
+catch(PDOException $e) {
+   // db_error(ERROR_QUERY, $e->getMessage());
+   $ihc_error = error_message('ERROR_QUERY', $e->getMessage());
+   
+   $html = <<< HEREDOC
+   {$ihc_error}
+HEREDOC;
+   include 'pagemake.php';
+   pagemake($html);
 }
+
 db_close();
 ?>

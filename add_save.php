@@ -2,6 +2,7 @@
 /* db_ext v2.0  @Shinjia  #2022/07/16 */
 
 include 'config.php';
+include 'utility.php';
 
 // 接收傳入變數
 $usercode = isset($_POST['usercode']) ? $_POST['usercode'] : '';
@@ -28,16 +29,23 @@ $sth->bindParam(':weight'  , $weight  , PDO::PARAM_INT);
 $sth->bindParam(':remark'  , $remark  , PDO::PARAM_STR);
 
 // 執行 SQL
-if($sth->execute())
-{
+try { 
+   $sth->execute();
+
    $new_uid = $pdo->lastInsertId();    // 傳回剛才新增記錄的 auto_increment 的欄位值
-   $url_display = "display.php?uid=" . $new_uid;
-   header("Location: " . $url_display);
+   $lnk_display = "display.php?uid=" . $new_uid;
+   // $refer = $_SERVER['HTTP_REFERER'];  // 呼叫此程式之前頁
+   header('Location: ' . $lnk_display);
 }
-else
-{
-   header("Location: error.php?type=add_save");
-   echo print_r($pdo->errorInfo()); exit;  // 此列供開發時期偵錯用
+catch(PDOException $e) {
+   // db_error(ERROR_QUERY, $e->getMessage());
+   $ihc_error = error_message('ERROR_QUERY', $e->getMessage());
+   
+   $html = <<< HEREDOC
+   {$ihc_error}
+HEREDOC;
+   include 'pagemake.php';
+   pagemake($html);
 }
 
 db_close();

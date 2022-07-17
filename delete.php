@@ -2,6 +2,7 @@
 /* db_ext v2.0  @Shinjia  #2022/07/16 */
 
 include 'config.php';
+include 'utility.php';
 
 // 接收傳入變數
 $uid = isset($_GET['uid']) ? $_GET['uid'] : 0;
@@ -25,6 +26,12 @@ try {
 catch(PDOException $e) {
     // db_error(ERROR_QUERY, $e->getMessage());
     $ihc_error = error_message('ERROR_QUERY', $e->getMessage());
+	
+    $html = <<< HEREDOC
+    {$ihc_error}
+HEREDOC;
+    include 'pagemake.php';
+    pagemake($html);
 }
 
 db_close();
